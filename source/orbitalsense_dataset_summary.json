@@ -1,0 +1,57 @@
+{
+  "total_rows": 199077,
+  "malformed_rows": 3997,
+  "malformed_pct": 2.008,
+  "duplicate_rows": 5829,
+  "duplicate_pct": 2.928,
+  "date_range": [
+    "2026-08-01T00:00:00+00:00",
+    "2026-08-15T00:00:00+00:00"
+  ],
+  "satellites": [
+    "SAT-01",
+    "SAT-02",
+    "SAT-03",
+    "SAT-04",
+    "SAT-05",
+    "SAT-06",
+    "SAT-07",
+    "SAT-08",
+    "SAT-09",
+    "SAT-10",
+    "SAT-11",
+    "SAT-12"
+  ],
+  "ground_stations": [
+    "GS-1",
+    "GS-2",
+    "GS-3",
+    "GS-4"
+  ],
+  "subsystems": [
+    "POWER",
+    "THERMAL",
+    "COMMS",
+    "ORBITAL"
+  ],
+  "dropout_satellite": "SAT-07",
+  "dropout_window_utc": [
+    "2026-08-06T14:20:00+00:00",
+    "2026-08-06T20:20:00+00:00"
+  ],
+  "degraded_comms_satellite": "SAT-11",
+  "rows_per_satellite": {
+    "SAT-07": 16315,
+    "SAT-11": 16613,
+    "SAT-05": 16617,
+    "SAT-09": 16606,
+    "SAT-01": 16606,
+    "SAT-06": 16624,
+    "SAT-10": 16630,
+    "SAT-03": 16637,
+    "SAT-08": 16599,
+    "SAT-02": 16604,
+    "SAT-04": 16613,
+    "SAT-12": 16613
+  }
+}

@@ -1,0 +1,205 @@
+<svg width="1600" height="760" viewBox="0 0 1600 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">OrbitalSense Telemetry Pipeline Workflow</title>
+  <desc id="desc">Satellite telemetry generation, ingestion, transformation, storage, and operational analytics workflow for OrbitalSense.</desc>
+
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L12,6 L0,12 z" fill="#2a2a2a"/>
+    </marker>
+    <style>
+      .main-title { font: 900 34px 'Arial Black', Arial, sans-serif; fill: #181818; }
+      .section-title { font: 700 24px 'Arial', sans-serif; fill: #1d1d1d; }
+      .box-label { font: 700 24px 'Arial', sans-serif; fill: #1d1d1d; }
+      .small-label { font: 700 18px 'Arial', sans-serif; fill: #1d1d1d; }
+      .tiny-label { font: 700 16px 'Arial', sans-serif; fill: #1d1d1d; }
+      .thin { stroke: #2f2f2f; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+      .wire { stroke: #2f2f2f; stroke-width: 5; fill: none; }
+      .box { stroke: #2d2d2d; stroke-width: 4; rx: 12; }
+      .gen { fill: #F2B7B8; }
+      .ingest { fill: #76C09E; }
+      .transform { fill: #D2A0E4; }
+      .serve { fill: #7BB4D8; }
+      .ops { fill: #F4D857; }
+      .under { fill: #DFE3E5; }
+      .under-alt { fill: #DBE1E8; }
+      .pink-under { fill: #D4B3E8; }
+      .blue-under { fill: #B9D8F2; }
+      .green-under { fill: #B6E2BF; }
+      .orange-under { fill: #F5D5A8; }
+      .purple-under { fill: #D9B6F2; }
+      .red { fill: #f24b52; }
+      .icon { stroke: #2a2a2a; stroke-width: 3; fill: none; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="760" fill="#f2f2f2"/>
+
+  <text x="800" y="45" text-anchor="middle" class="main-title">ORBITALSENSE TELEMETRY PIPELINE WORKFLOW</text>
+
+  <!-- Left generation cluster -->
+  <g>
+    <text x="170" y="100" class="small-label" text-anchor="middle">Satellite &amp; Ground Stations</text>
+
+    <rect x="40" y="140" width="290" height="140" class="box gen"/>
+    <text x="185" y="170" class="box-label" text-anchor="middle">Generation</text>
+    <text x="185" y="212" class="tiny-label" text-anchor="middle">SATELLITES (x12)</text>
+
+    <g font-size="14" font-family="Arial, sans-serif" font-weight="700" fill="#1d1d1d">
+      <circle cx="105" cy="255" r="17" class="icon"/>
+      <circle cx="145" cy="255" r="17" class="icon"/>
+      <circle cx="185" cy="255" r="17" class="icon"/>
+      <circle cx="225" cy="255" r="17" class="icon"/>
+      <circle cx="265" cy="255" r="17" class="icon"/>
+      <path d="M 100 245 L 110 245 M 100 265 L 110 265" class="wire"/>
+      <path d="M 140 245 L 150 245 M 140 265 L 150 265" class="wire"/>
+      <path d="M 180 245 L 190 245 M 180 265 L 190 265" class="wire"/>
+      <path d="M 220 245 L 230 245 M 220 265 L 230 265" class="wire"/>
+      <path d="M 260 245 L 270 245 M 260 265 L 270 265" class="wire"/>
+    </g>
+
+    <text x="185" y="294" class="tiny-label" text-anchor="middle">GROUND</text>
+    <text x="185" y="314" class="tiny-label" text-anchor="middle">STATIONS (x4)</text>
+
+    <g>
+      <line x1="330" y1="210" x2="410" y2="210" class="wire"/>
+      <path d="M 330 210 L 410 210" stroke="#2f2f2f" stroke-width="4" fill="none"/>
+      <path d="M 410 210 L 428 210" class="thin"/>
+    </g>
+
+    <g>
+      <path d="M 340 286 L 290 286" stroke="#2f2f2f" stroke-width="2" fill="none" stroke-dasharray="6 6"/>
+      <path d="M 290 286 C 220 260, 220 230, 255 220" stroke="#2f2f2f" stroke-width="2" fill="none" stroke-dasharray="6 6"/>
+      <path d="M 290 286 C 220 320, 220 360, 255 348" stroke="#2f2f2f" stroke-width="2" fill="none" stroke-dasharray="6 6"/>
+      <text x="130" y="388" class="tiny-label" text-anchor="middle">Satellite Dropped?</text>
+      <text x="130" y="408" class="tiny-label" text-anchor="middle">Out-of-order Delivery?</text>
+    </g>
+  </g>
+
+  <!-- Central pipeline -->
+  <g>
+    <text x="720" y="100" class="section-title" text-anchor="middle">Telemetry Data Processing Lifecycle</text>
+
+    <rect x="430" y="130" width="210" height="90" class="box ingest"/>
+    <text x="535" y="177" class="box-label" text-anchor="middle" fill="#ffffff">Ingestion</text>
+    <text x="535" y="200" class="tiny-label" text-anchor="middle" fill="#ffffff">Telemetry</text>
+    <text x="535" y="218" class="tiny-label" text-anchor="middle" fill="#ffffff">Consumer</text>
+
+    <rect x="670" y="130" width="250" height="90" class="box transform"/>
+    <text x="795" y="177" class="box-label" text-anchor="middle" fill="#ffffff">Transformation</text>
+    <text x="795" y="200" class="tiny-label" text-anchor="middle" fill="#ffffff">VALIDATION &amp; ENRICHMENT</text>
+
+    <rect x="960" y="130" width="230" height="90" class="box serve"/>
+    <text x="1075" y="177" class="box-label" text-anchor="middle" fill="#ffffff">Serving</text>
+    <text x="1075" y="200" class="tiny-label" text-anchor="middle" fill="#ffffff">OPERATIONAL</text>
+    <text x="1075" y="218" class="tiny-label" text-anchor="middle" fill="#ffffff">ANALYTICS FEED</text>
+
+    <line x1="640" y1="175" x2="670" y2="175" class="thin"/>
+    <line x1="920" y1="175" x2="960" y2="175" class="thin"/>
+
+    <g>
+      <rect x="430" y="245" width="910" height="120" class="box under"/>
+      <text x="885" y="315" class="section-title" text-anchor="middle">Storage</text>
+
+      <rect x="470" y="270" width="210" height="62" fill="#D6D7D9" stroke="#2d2d2d" stroke-width="3"/>
+      <text x="575" y="310" class="small-label" text-anchor="middle">GCS</text>
+      <text x="575" y="330" class="tiny-label" text-anchor="middle">Raw Telemetry</text>
+
+      <rect x="700" y="270" width="290" height="62" fill="#D6D7D9" stroke="#2d2d2d" stroke-width="3"/>
+      <text x="845" y="302" class="small-label" text-anchor="middle">BQ Curated Telemetry</text>
+      <text x="845" y="323" class="tiny-label" text-anchor="middle">(Partitioned, Clustered)</text>
+
+      <rect x="1010" y="270" width="265" height="62" fill="#D6D7D9" stroke="#2d2d2d" stroke-width="3"/>
+      <text x="1142" y="302" class="small-label" text-anchor="middle">BQ Quarantine Data</text>
+      <text x="1142" y="323" class="tiny-label" text-anchor="middle">Completeness</text>
+    </g>
+
+    <!-- right side operational boxes -->
+    <g>
+      <rect x="1240" y="135" width="220" height="120" class="box ops"/>
+      <text x="1350" y="182" class="box-label" text-anchor="middle">Mission Ops</text>
+      <text x="1350" y="208" class="box-label" text-anchor="middle">Dashboards</text>
+      <g transform="translate(1355 145)">
+        <circle cx="0" cy="15" r="17" fill="#f24b52" stroke="#2a2a2a" stroke-width="2"/>
+        <path d="M0 8 L0 20 M0 26 L0 28" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+      </g>
+    </g>
+
+    <rect x="1240" y="275" width="220" height="110" class="box ops"/>
+    <text x="1350" y="320" class="box-label" text-anchor="middle">Operational</text>
+    <text x="1350" y="350" class="box-label" text-anchor="middle">Analytics</text>
+    <text x="1350" y="372" class="tiny-label" text-anchor="middle">(SQL Queries)</text>
+
+    <rect x="1240" y="410" width="220" height="110" class="box ops"/>
+    <text x="1350" y="455" class="box-label" text-anchor="middle">Pipeline</text>
+    <text x="1350" y="485" class="box-label" text-anchor="middle">Monitoring /</text>
+    <text x="1350" y="508" class="box-label" text-anchor="middle">Audit Logs</text>
+
+    <line x1="1190" y1="175" x2="1240" y2="175" class="thin"/>
+    <line x1="1190" y1="330" x2="1240" y2="330" class="thin"/>
+    <line x1="1190" y1="465" x2="1240" y2="465" class="thin"/>
+  </g>
+
+  <!-- Under currents -->
+  <g>
+    <line x1="40" y1="560" x2="1560" y2="560" stroke="#2d2d2d" stroke-width="5"/>
+    <text x="800" y="595" text-anchor="middle" class="section-title">Undercurrents:</text>
+
+    <rect x="50" y="620" width="150" height="90" class="box blue-under"/>
+    <text x="125" y="665" class="small-label" text-anchor="middle">Infrastructure</text>
+    <text x="125" y="690" class="tiny-label" text-anchor="middle">(IaC - Terraform)</text>
+
+    <rect x="230" y="620" width="150" height="90" class="box pink-under"/>
+    <text x="305" y="665" class="small-label" text-anchor="middle">Security</text>
+    <text x="305" y="690" class="tiny-label" text-anchor="middle">(Least-Privilege IAM)</text>
+
+    <rect x="410" y="620" width="170" height="90" class="box under-alt"/>
+    <text x="495" y="655" class="small-label" text-anchor="middle">Data Quality</text>
+    <text x="495" y="690" class="tiny-label" text-anchor="middle">(Trust &amp; Validation)</text>
+
+    <rect x="610" y="620" width="170" height="90" class="box green-under"/>
+    <text x="695" y="655" class="small-label" text-anchor="middle">Observability</text>
+    <text x="695" y="690" class="tiny-label" text-anchor="middle">(Near-Real Time Alerts)</text>
+
+    <rect x="810" y="620" width="150" height="90" class="box under"/>
+    <text x="885" y="665" class="small-label" text-anchor="middle">DataOps</text>
+    <text x="885" y="690" class="tiny-label" text-anchor="middle">(Reproducible Deploy)</text>
+
+    <rect x="990" y="620" width="170" height="90" class="box orange-under"/>
+    <text x="1075" y="655" class="small-label" text-anchor="middle">Fault Tolerance</text>
+    <text x="1075" y="690" class="tiny-label" text-anchor="middle">(Dropout Recovery)</text>
+
+    <rect x="1190" y="620" width="170" height="90" class="box purple-under"/>
+    <text x="1275" y="655" class="small-label" text-anchor="middle">Event-Time</text>
+    <text x="1275" y="690" class="tiny-label" text-anchor="middle">Processing</text>
+
+    <rect x="1390" y="620" width="160" height="90" class="box under-alt"/>
+    <text x="1470" y="655" class="small-label" text-anchor="middle">Containerization</text>
+    <text x="1470" y="690" class="tiny-label" text-anchor="middle">(Docker)</text>
+  </g>
+
+  <!-- small callout notes -->
+  <g>
+    <text x="470" y="118" class="tiny-label" text-anchor="middle">Pub/Sub</text>
+    <text x="495" y="245" class="tiny-label" text-anchor="middle">Metadata</text>
+    <text x="495" y="260" class="tiny-label" text-anchor="middle">Enriched</text>
+    <text x="710" y="245" class="tiny-label" text-anchor="middle">Schema Check</text>
+    <text x="710" y="260" class="tiny-label" text-anchor="middle">Physical Bounds</text>
+    <text x="710" y="275" class="tiny-label" text-anchor="middle">Deduplication</text>
+
+    <text x="163" y="132" class="tiny-label" text-anchor="middle">GROUND STATIONS</text>
+    <text x="163" y="148" class="tiny-label" text-anchor="middle">(x4)</text>
+
+    <g>
+      <circle cx="115" cy="150" r="6" fill="#2d2d2d"/>
+      <circle cx="143" cy="150" r="6" fill="#2d2d2d"/>
+      <circle cx="171" cy="150" r="6" fill="#2d2d2d"/>
+      <circle cx="199" cy="150" r="6" fill="#2d2d2d"/>
+      <circle cx="227" cy="150" r="6" fill="#2d2d2d"/>
+    </g>
+
+    <g>
+      <path d="M 736 120 L 760 120 M 736 138 L 760 138" stroke="#2a2a2a" stroke-width="2" fill="none"/>
+      <path d="M 782 120 L 805 120 M 782 138 L 805 138" stroke="#2a2a2a" stroke-width="2" fill="none"/>
+    </g>
+  </g>
+</svg>

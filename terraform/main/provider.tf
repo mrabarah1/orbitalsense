@@ -12,7 +12,7 @@ terraform {
 
   backend "gcs" {
     bucket = "orbitalsense-platform-tfstate"
-    prefix = "orbitalsense"
+    prefix = "orbitalsense/dev"
   }
 }
 

@@ -10,7 +10,12 @@ from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.transforms import userstate
 from apache_beam.transforms.timeutil import TimeDomain
 from apache_beam.transforms.window import FixedWindows
-from apache_beam.utils.timestamp import Timestamp
+from apache_beam.transforms.userstate import (
+    ReadModifyWriteStateSpec,
+    TimerSpec,
+    TimeDomain,
+)
+
 
 
 # ============================================================

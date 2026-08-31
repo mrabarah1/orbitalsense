@@ -3,33 +3,33 @@
 
 resource "google_bigquery_dataset" "raw" {
   dataset_id = "orbitalsense_raw"
-  location = var.region
+  location   = var.region
 }
 
 resource "google_bigquery_dataset" "curated" {
   dataset_id = "orbitalsense_curated"
-  location = var.region
+  location   = var.region
 }
 
 resource "google_bigquery_dataset" "quarantine" {
   dataset_id = "orbitalsense_quarantine"
-  location = var.region
+  location   = var.region
 }
 
 resource "google_bigquery_dataset" "gold" {
   dataset_id = "orbitalsense_gold"
-  location = var.region
+  location   = var.region
 }
 
 # Raw BigQuery Table
 resource "google_bigquery_table" "raw_telemetry" {
   dataset_id = google_bigquery_dataset.raw.dataset_id
-  table_id = "telemetry_raw"
+  table_id   = "telemetry_raw"
 
   deletion_protection = false
 
   time_partitioning {
-    type = "DAY"
+    type  = "DAY"
     field = "ingestion_timestamp"
   }
 
@@ -62,12 +62,12 @@ EOF
 # Quarantine BigQuery Table
 resource "google_bigquery_table" "quarantine" {
   dataset_id = google_bigquery_dataset.quarantine.dataset_id
-  table_id = "telemetry_quarantine"
+  table_id   = "telemetry_quarantine"
 
   deletion_protection = false
 
   time_partitioning {
-    type = "DAY"
+    type  = "DAY"
     field = "quarantine_at"
   }
 
@@ -76,7 +76,7 @@ resource "google_bigquery_table" "quarantine" {
     "reason_code"
   ]
 
- schema = <<EOF
+  schema = <<EOF
 [
   {"name":"message_id","type":"STRING","mode":"NULLABLE"},
   {"name":"satellite_id","type":"STRING","mode":"NULLABLE"},
@@ -99,7 +99,7 @@ resource "google_bigquery_table" "curated" {
   dataset_id = google_bigquery_dataset.curated.dataset_id
   table_id   = "telemetry_curated"
 
-  deletion_protection = false 
+  deletion_protection = false
 
   time_partitioning {
     type  = "DAY"

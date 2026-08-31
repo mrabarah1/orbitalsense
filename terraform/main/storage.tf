@@ -1,5 +1,7 @@
-resource "google_storage_bucket" "raw" {
-  name     = "${var.project_id}-orbitalsense-raw"
+
+
+resource "google_storage_bucket" "terraform_state" {
+  name     = "${var.project_id}-tfstate"
   location = var.region
 
   uniform_bucket_level_access = true
@@ -10,7 +12,7 @@ resource "google_storage_bucket" "raw" {
 
   lifecycle_rule {
     condition {
-      age = 30
+      num_newer_versions = 5
     }
 
     action {
@@ -19,7 +21,7 @@ resource "google_storage_bucket" "raw" {
   }
 
   labels = {
-    layer       = "raw"
+    layer       = "terraform-state"
     environment = var.environment
   }
 

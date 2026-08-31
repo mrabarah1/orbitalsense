@@ -1,20 +1,20 @@
 
 # terraform variables-2
 variable "project_id" {
-  type = string
+  type        = string
   description = "orbitalsense-platform"
 }
 
 variable "region" {
-  type = string
+  type        = string
   description = "Google Cloud region"
-  default = "us-central1"
+  default     = "us-central1"
 }
 
 variable "environment" {
-  type = string
+  type        = string
   description = "Development environment"
-  default = "dev"
+  default     = "dev"
 }
 
 

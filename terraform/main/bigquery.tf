@@ -68,7 +68,7 @@ resource "google_bigquery_table" "quarantine" {
 
   time_partitioning {
     type  = "DAY"
-    field = "quarantine_at"
+    field = "quarantined_at"
   }
 
   clustering = [

@@ -36,7 +36,7 @@ resource "google_project_iam_member" "beam_bigquery" {
 resource "google_project_iam_member" "beam_bigquery_job" {
   project = var.project_id
   role = "roles/bigquery.jobUser"
-  member = serviceAccount:${google_service_account.beam.email}
+  member = "serviceAccount:${google_service_account.beam.email}"
 }
 
 # Artificial Registry

@@ -2,7 +2,7 @@
 # terraform variables-2
 variable "project_id" {
   type = string
-  description = "GCP PROJECT ID"
+  description = "orbitalsense-platform"
 }
 
 variable "region" {

@@ -98,9 +98,7 @@ def parse_timestamp(value):
     )
 
     if parsed.tzinfo is None:
-        parsed = parsed.replace(
-            tzinfo=timezone.utc
-        )
+        parsed = parsed.replace(tzinfo=timezone.utc)
 
     return parsed.astimezone(timezone.utc)
 
@@ -139,10 +137,7 @@ def dedup_key(record):
         "velocity_kms",
     ]
 
-    canonical = {
-        field: record.get(field)
-        for field in identity_fields
-    }
+    canonical = {field: record.get(field) for field in identity_fields}
 
     canonical_json = json.dumps(
         canonical,
@@ -151,9 +146,7 @@ def dedup_key(record):
         default=str,
     )
 
-    return hashlib.sha256(
-        canonical_json.encode("utf-8")
-    ).hexdigest()
+    return hashlib.sha256(canonical_json.encode("utf-8")).hexdigest()
 
 
 
@@ -172,279 +165,140 @@ def validate_record(record):
     """
 
     if not isinstance(record, dict):
-        return (
-            False,
-            "INVALID_JSON",
-            "Payload must be a JSON object",
-        )
+        return (False, "INVALID_JSON", "Payload must be a JSON object")
+
 
 
     # Required fields
     for field in REQUIRED_FIELDS:
 
         if field not in record:
-            return (
-                False,
-                "MISSING_REQUIRED_FIELD",
-                field,
-            )
+            return (False, "MISSING_REQUIRED_FIELD", field)
 
         if record[field] in (None, ""):
-            return (
-                False,
-                "MISSING_REQUIRED_FIELD",
-                field,
-            )
+            return (False, "MISSING_REQUIRED_FIELD", field)
 
  
     # Satellite
     satellite_id = record["satellite_id"]
 
     if satellite_id not in SATELLITES:
-        return (
-            False,
-            "INVALID_SATELLITE",
-            str(satellite_id),
-        )
+        return (False, "INVALID_SATELLITE", str(satellite_id))
 
     # Ground station
     ground_station_id = record["ground_station_id"]
 
     if ground_station_id not in GROUND_STATIONS:
-        return (
-            False,
-            "INVALID_GROUND_STATION",
-            str(ground_station_id),
-        )
+        return (False, "INVALID_GROUND_STATION", str(ground_station_id))
 
     # Subsystem
     subsystem = record["subsystem"]
 
     if subsystem not in SUBSYSTEMS:
-        return (
-            False,
-            "INVALID_SUBSYSTEM",
-            str(subsystem),
-        )
+        return (False, "INVALID_SUBSYSTEM", str(subsystem))
 
     # Timestamp validation
     try:
+        event_timestamp = parse_timestamp(record["event_timestamp"])
 
-        event_timestamp = parse_timestamp(
-            record["event_timestamp"]
-        )
-
-        received_timestamp = parse_timestamp(
-            record["received_timestamp"]
-        )
+        received_timestamp = parse_timestamp(record["received_timestamp"])
 
     except Exception as exc:
-
-        return (
-            False,
-            "INVALID_TIMESTAMP",
-            str(exc),
-        )
+        return (False, "INVALID_TIMESTAMP", str(exc))
 
     now = utc_now()
 
     if event_timestamp > now:
-        return (
-            False,
-            "FUTURE_EVENT_TIMESTAMP",
-            record["event_timestamp"],
-        )
+        return (False, "FUTURE_EVENT_TIMESTAMP", record["event_timestamp"])
 
     if received_timestamp < event_timestamp:
-        return (
-            False,
-            "INVALID_RECEIVED_TIMESTAMP",
-            "received_timestamp is before event_timestamp",
-        )
+        return (False, "INVALID_RECEIVED_TIMESTAMP", "received_timestamp is before event_timestamp")
 
     # Physical validation
-    try:
-
-        
+    try:  
         # POWER
         if subsystem == "POWER":
-
-            voltage = float(
-                record.get("battery_voltage_v")
-            )
-
+            voltage = float(record.get("battery_voltage_v"))
+            
             if not 20 <= voltage <= 35:
-                return (
-                    False,
-                    "OUT_OF_PHYSICAL_RANGE",
-                    "battery_voltage_v",
-                )
+                return (False, "OUT_OF_PHYSICAL_RANGE", "battery_voltage_v")
 
-            current = float(
-                record.get("battery_current_a")
-            )
-
+            current = float(record.get("battery_current_a"))
+            
             if not 0 <= current <= 10:
-                return (
-                    False,
-                    "OUT_OF_PHYSICAL_RANGE",
-                    "battery_current_a",
-                )
+                return (False, "OUT_OF_PHYSICAL_RANGE", "battery_current_a")
 
-            solar = float(
-                record.get("solar_output_w")
-            )
+            solar = float(record.get("solar_output_w"))
 
             if not 0 <= solar <= 1000:
-                return (
-                    False,
-                    "OUT_OF_PHYSICAL_RANGE",
-                    "solar_output_w",
-                )
+                return (False, "OUT_OF_PHYSICAL_RANGE", "solar_output_w")
 
         # THERMAL
         elif subsystem == "THERMAL":
 
-            internal = float(
-                record.get("internal_temp_c")
-            )
+            internal = float(record.get("internal_temp_c"))
 
             if not -100 <= internal <= 100:
-                return (
-                    False,
-                    "OUT_OF_PHYSICAL_RANGE",
-                    "internal_temp_c",
-                )
+                return (False, "OUT_OF_PHYSICAL_RANGE", "internal_temp_c")
 
-            external = float(
-                record.get("external_temp_c")
-            )
+            external = float(record.get("external_temp_c"))
 
             if not -200 <= external <= 150:
-                return (
-                    False,
-                    "OUT_OF_PHYSICAL_RANGE",
-                    "external_temp_c",
-                )
+                return (False, "OUT_OF_PHYSICAL_RANGE", "external_temp_c")
 
         # COMMS
         elif subsystem == "COMMS":
 
-            signal = float(
-                record.get("signal_strength_dbm")
-            )
+            signal = float(record.get("signal_strength_dbm"))
 
             if not -150 <= signal <= 0:
-                return (
-                    False,
-                    "OUT_OF_PHYSICAL_RANGE",
-                    "signal_strength_dbm",
-                )
+                return (False, "OUT_OF_PHYSICAL_RANGE", "signal_strength_dbm")
 
-            ber = float(
-                record.get("bit_error_rate")
-            )
+            ber = float(record.get("bit_error_rate"))
 
             if not 0 <= ber <= 1:
-                return (
-                    False,
-                    "OUT_OF_PHYSICAL_RANGE",
-                    "bit_error_rate",
-                )
+                return (False, "OUT_OF_PHYSICAL_RANGE", "bit_error_rate")
 
             status = record.get("comm_status")
 
-            if status not in {
-                "NOMINAL",
-                "DEGRADED",
-                "LOST",
-            }:
-                return (
-                    False,
-                    "INVALID_COMM_STATUS",
-                    str(status),
-                )
+            if status not in {"NOMINAL", "DEGRADED", "LOST"}:
+                return (False, "INVALID_COMM_STATUS", str(status))
 
             # Cross-field consistency.
             if signal >= -80 and status != "NOMINAL":
-
-                return (
-                    False,
-                    "INCONSISTENT_COMM_STATUS",
-                    "Signal >= -80 dBm must be NOMINAL",
-                )
+                return (False, "INCONSISTENT_COMM_STATUS", "Signal >= -80 dBm must be NOMINAL")
 
             if -95 <= signal < -80 and status != "DEGRADED":
-
-                return (
-                    False,
-                    "INCONSISTENT_COMM_STATUS",
-                    "Signal between -95 and -80 dBm must be DEGRADED",
-                )
+                return ( False, "INCONSISTENT_COMM_STATUS", "Signal between -95 and -80 dBm must be DEGRADED")
 
             if signal < -95 and status != "LOST":
-
-                return (
-                    False,
-                    "INCONSISTENT_COMM_STATUS",
-                    "Signal below -95 dBm must be LOST",
-                )
+                return (False, "INCONSISTENT_COMM_STATUS", "Signal below -95 dBm must be LOST")
 
         
         # ORBITAL
         elif subsystem == "ORBITAL":
-
-            latitude = float(
-                record.get("latitude")
-            )
+            latitude = float(record.get("latitude"))
 
             if not -90 <= latitude <= 90:
-                return (
-                    False,
-                    "OUT_OF_PHYSICAL_RANGE",
-                    "latitude",
-                )
+                return (False, "OUT_OF_PHYSICAL_RANGE", "latitude")
 
-            longitude = float(
-                record.get("longitude")
-            )
+            longitude = float(record.get("longitude"))
 
             if not -180 <= longitude <= 180:
-                return (
-                    False,
-                    "OUT_OF_PHYSICAL_RANGE",
-                    "longitude",
-                )
+                return (False, "OUT_OF_PHYSICAL_RANGE", "longitude")
+            
 
-            altitude = float(
-                record.get("altitude_km")
-            )
-
+            altitude = float(record.get("altitude_km"))
             if not 0 <= altitude <= 2000:
-                return (
-                    False,
-                    "OUT_OF_PHYSICAL_RANGE",
-                    "altitude_km",
-                )
+                return (False, "OUT_OF_PHYSICAL_RANGE", "altitude_km")
 
-            velocity = float(
-                record.get("velocity_kms")
-            )
+            velocity = float(record.get("velocity_kms"))
 
             if not 0 <= velocity <= 15:
-                return (
-                    False,
-                    "OUT_OF_PHYSICAL_RANGE",
-                    "velocity_kms",
-                )
+                return (False, "OUT_OF_PHYSICAL_RANGE", "velocity_kms")
 
     except (TypeError, ValueError):
-
-        return (
-            False,
-            "INVALID_NUMERIC_TYPE",
-            subsystem,
-        )
+        return (False, "INVALID_NUMERIC_TYPE", subsystem)
 
     return True, None, None
 
@@ -455,11 +309,7 @@ def validate_record(record):
 class CreateRawRecord(beam.DoFn):
 
     def process(self, element):
-
-        raw_payload = element.decode(
-            "utf-8",
-            errors="replace",
-        )
+        raw_payload = element.decode("utf-8", errors="replace")
 
         message_id = None
         satellite_id = None
@@ -467,28 +317,16 @@ class CreateRawRecord(beam.DoFn):
         subsystem = None
 
         try:
-
-            record = json.loads(
-                raw_payload
-            )
+            record = json.loads(raw_payload)
 
             if isinstance(record, dict):
+                message_id = record.get("message_id" )               
 
-                message_id = record.get(
-                    "message_id"
-                )
+                satellite_id = record.get("satellite_id")
 
-                satellite_id = record.get(
-                    "satellite_id"
-                )
+                ground_station_id = record.get("ground_station_id")
 
-                ground_station_id = record.get(
-                    "ground_station_id"
-                )
-
-                subsystem = record.get(
-                    "subsystem"
-                )
+                subsystem = record.get("subsystem")
 
         except Exception:
             # The complete payload is still retained.
@@ -511,23 +349,15 @@ class CreateRawRecord(beam.DoFn):
 
 # Parse, validate and enrich
 class ParseValidateEnrich(beam.DoFn):
-
     QUARANTINE_TAG = "quarantine"
 
     def process(self, element):
-
-        raw_payload = element.decode(
-            "utf-8",
-            errors="replace",
-        )
+        raw_payload = element.decode("utf-8", errors="replace")
 
    
         # JSON parsing
         try:
-
-            record = json.loads(
-                raw_payload
-            )
+            record = json.loads(raw_payload)
 
         except Exception as exc:
 
@@ -553,12 +383,9 @@ class ParseValidateEnrich(beam.DoFn):
 
         
         # Validation
-        valid, reason_code, reason_detail = (
-            validate_record(record)
-        )
+        valid, reason_code, reason_detail = (validate_record(record))
 
         if not valid:
-
             yield beam.pvalue.TaggedOutput(
                 self.QUARANTINE_TAG,
                 {
@@ -592,37 +419,24 @@ class ParseValidateEnrich(beam.DoFn):
      
         # Numeric normalization
         for field in NUMERIC_FIELDS:
-
             value = record.get(field)
 
             if value in (None, ""):
-
                 record[field] = None
 
             else:
-
                 record[field] = float(value)
 
         
         # Semantic identity
-        record["dedup_key"] = dedup_key(
-            record
-        )
+        record["dedup_key"] = dedup_key(record)
 
         # Ingestion metadata
-        record["ingestion_timestamp"] = (
-            timestamp_to_iso(
-                utc_now()
-            )
-        )
+        record["ingestion_timestamp"] = (timestamp_to_iso(utc_now()))
 
-        record["pipeline_version"] = (
-            PIPELINE_VERSION
-        )
+        record["pipeline_version"] = (PIPELINE_VERSION)
 
-        record["source_ground_station"] = (
-            record["ground_station_id"]
-        )
+        record["source_ground_station"] = (record["ground_station_id"])
 
         yield record
 
@@ -640,15 +454,9 @@ class StatefulDeduplicate(beam.DoFn):
     and allowed-lateness period.
     """
 
-    SEEN = userstate.ReadModifyWriteStateSpec(
-        "seen",
-        BooleanCoder(),
-    )
+    SEEN = userstate.ReadModifyWriteStateSpec("seen", BooleanCoder())
 
-    EXPIRY = userstate.TimerSpec(
-        "expiry",
-        TimeDomain.WATERMARK,
-    )
+    EXPIRY = userstate.TimerSpec("expiry", TimeDomain.WATERMARK)
 
     def process(
         self,
@@ -662,26 +470,20 @@ class StatefulDeduplicate(beam.DoFn):
 
         # Already seen semantic event.
         if seen.read():
-
             return
 
         # Mark semantic event as seen.
         seen.write(True)
 
         # Keep state until allowed lateness has passed.
-        expiry.set(
-            timestamp
-            + ALLOWED_LATENESS_SECONDS
-        )
+        expiry.set(timestamp + ALLOWED_LATENESS_SECONDS)
 
         yield record
 
     @userstate.on_timer(EXPIRY)
-    def clear_state(
-        self,
-        seen=beam.DoFn.StateParam(SEEN),
-    ):
-
+    
+    
+    def clear_state(self, seen=beam.DoFn.StateParam(SEEN)):
         seen.clear()
 
 
@@ -913,48 +715,21 @@ QUARANTINE_SCHEMA = {
 
 # Pipeline
 def run():
-
     parser = argparse.ArgumentParser()
 
-    parser.add_argument(
-        "--input_subscription",
-        required=True,
-        help="Pub/Sub subscription",
-    )
+    parser.add_argument("--input_subscription", required=True, help="Pub/Sub subscription")
 
-    parser.add_argument(
-        "--raw_table",
-        required=True,
-        help="BigQuery raw table",
-    )
+    parser.add_argument("--raw_table", required=True, help="BigQuery raw table")
 
-    parser.add_argument(
-        "--curated_table",
-        required=True,
-        help="BigQuery curated table",
-    )
+    parser.add_argument("--curated_table", required=True, help="BigQuery curated table")
 
-    parser.add_argument(
-        "--quarantine_table",
-        required=True,
-        help="BigQuery quarantine table",
-    )
+    parser.add_argument("--quarantine_table", required=True, help="BigQuery quarantine table")
 
-    known_args, pipeline_args = (
-        parser.parse_known_args()
-    )
+    known_args, pipeline_args = (parser.parse_known_args())
 
-    options = PipelineOptions(
-        pipeline_args,
-        streaming=True,
-        save_main_session=True,
-    )
+    options = PipelineOptions(pipeline_args, streaming=True, save_main_session=True)
 
-    with beam.Pipeline(
-        options=options
-    ) as pipeline:
-
-        
+    with beam.Pipeline(options=options) as pipeline:        
         # Pub/Sub
         messages = (
             pipeline

@@ -18,10 +18,8 @@ from apache_beam.transforms.userstate import (
 
 
 
-# ============================================================
-# OrbitalSense pipeline configuration
-# ============================================================
 
+# OrbitalSense pipeline configuration
 PIPELINE_VERSION = "1.0.0"
 
 WINDOW_SECONDS = 5 * 60
@@ -74,10 +72,8 @@ NUMERIC_FIELDS = [
 ]
 
 
-# ============================================================
-# Utility functions
-# ============================================================
 
+# Utility functions
 def utc_now():
     return datetime.now(timezone.utc)
 
@@ -160,10 +156,8 @@ def dedup_key(record):
     ).hexdigest()
 
 
-# ============================================================
-# Validation
-# ============================================================
 
+# Validation
 def validate_record(record):
     """
     Validate one telemetry record.
@@ -184,10 +178,8 @@ def validate_record(record):
             "Payload must be a JSON object",
         )
 
-    # --------------------------------------------------------
-    # Required fields
-    # --------------------------------------------------------
 
+    # Required fields
     for field in REQUIRED_FIELDS:
 
         if field not in record:
@@ -204,10 +196,8 @@ def validate_record(record):
                 field,
             )
 
-    # --------------------------------------------------------
+ 
     # Satellite
-    # --------------------------------------------------------
-
     satellite_id = record["satellite_id"]
 
     if satellite_id not in SATELLITES:
@@ -217,10 +207,7 @@ def validate_record(record):
             str(satellite_id),
         )
 
-    # --------------------------------------------------------
     # Ground station
-    # --------------------------------------------------------
-
     ground_station_id = record["ground_station_id"]
 
     if ground_station_id not in GROUND_STATIONS:
@@ -230,10 +217,7 @@ def validate_record(record):
             str(ground_station_id),
         )
 
-    # --------------------------------------------------------
     # Subsystem
-    # --------------------------------------------------------
-
     subsystem = record["subsystem"]
 
     if subsystem not in SUBSYSTEMS:
@@ -243,10 +227,7 @@ def validate_record(record):
             str(subsystem),
         )
 
-    # --------------------------------------------------------
     # Timestamp validation
-    # --------------------------------------------------------
-
     try:
 
         event_timestamp = parse_timestamp(
@@ -281,16 +262,11 @@ def validate_record(record):
             "received_timestamp is before event_timestamp",
         )
 
-    # --------------------------------------------------------
     # Physical validation
-    # --------------------------------------------------------
-
     try:
 
-        # ====================================================
+        
         # POWER
-        # ====================================================
-
         if subsystem == "POWER":
 
             voltage = float(
@@ -326,10 +302,7 @@ def validate_record(record):
                     "solar_output_w",
                 )
 
-        # ====================================================
         # THERMAL
-        # ====================================================
-
         elif subsystem == "THERMAL":
 
             internal = float(
@@ -354,10 +327,7 @@ def validate_record(record):
                     "external_temp_c",
                 )
 
-        # ====================================================
         # COMMS
-        # ====================================================
-
         elif subsystem == "COMMS":
 
             signal = float(
@@ -420,10 +390,8 @@ def validate_record(record):
                     "Signal below -95 dBm must be LOST",
                 )
 
-        # ====================================================
+        
         # ORBITAL
-        # ====================================================
-
         elif subsystem == "ORBITAL":
 
             latitude = float(
@@ -481,10 +449,9 @@ def validate_record(record):
     return True, None, None
 
 
-# ============================================================
-# Raw record
-# ============================================================
 
+
+# Raw record
 class CreateRawRecord(beam.DoFn):
 
     def process(self, element):
@@ -541,10 +508,8 @@ class CreateRawRecord(beam.DoFn):
         }
 
 
-# ============================================================
-# Parse, validate and enrich
-# ============================================================
 
+# Parse, validate and enrich
 class ParseValidateEnrich(beam.DoFn):
 
     QUARANTINE_TAG = "quarantine"
@@ -556,10 +521,8 @@ class ParseValidateEnrich(beam.DoFn):
             errors="replace",
         )
 
-        # ----------------------------------------------------
+   
         # JSON parsing
-        # ----------------------------------------------------
-
         try:
 
             record = json.loads(
@@ -588,10 +551,8 @@ class ParseValidateEnrich(beam.DoFn):
 
             return
 
-        # ----------------------------------------------------
+        
         # Validation
-        # ----------------------------------------------------
-
         valid, reason_code, reason_detail = (
             validate_record(record)
         )
@@ -628,10 +589,8 @@ class ParseValidateEnrich(beam.DoFn):
 
             return
 
-        # ----------------------------------------------------
+     
         # Numeric normalization
-        # ----------------------------------------------------
-
         for field in NUMERIC_FIELDS:
 
             value = record.get(field)
@@ -644,18 +603,13 @@ class ParseValidateEnrich(beam.DoFn):
 
                 record[field] = float(value)
 
-        # ----------------------------------------------------
+        
         # Semantic identity
-        # ----------------------------------------------------
-
         record["dedup_key"] = dedup_key(
             record
         )
 
-        # ----------------------------------------------------
         # Ingestion metadata
-        # ----------------------------------------------------
-
         record["ingestion_timestamp"] = (
             timestamp_to_iso(
                 utc_now()
@@ -673,10 +627,8 @@ class ParseValidateEnrich(beam.DoFn):
         yield record
 
 
-# ============================================================
-# Stateful deduplication
-# ============================================================
 
+# Stateful deduplication
 class StatefulDeduplicate(beam.DoFn):
     """
     Stateful semantic deduplication.
@@ -733,10 +685,8 @@ class StatefulDeduplicate(beam.DoFn):
         seen.clear()
 
 
-# ============================================================
-# BigQuery schemas
-# ============================================================
 
+# BigQuery schemas
 RAW_SCHEMA = {
     "fields": [
         {
@@ -960,10 +910,8 @@ QUARANTINE_SCHEMA = {
 }
 
 
-# ============================================================
-# Pipeline
-# ============================================================
 
+# Pipeline
 def run():
 
     parser = argparse.ArgumentParser()
@@ -1006,10 +954,8 @@ def run():
         options=options
     ) as pipeline:
 
-        # ====================================================
+        
         # Pub/Sub
-        # ====================================================
-
         messages = (
             pipeline
             | "ReadTelemetryFromPubSub"
@@ -1020,12 +966,11 @@ def run():
             )
         )
 
-        # ====================================================
+
         # RAW / BRONZE
         #
         # Every Pub/Sub message is preserved.
         # No validation is performed before this write.
-        # ====================================================
 
         (
             messages
@@ -1046,10 +991,8 @@ def run():
             )
         )
 
-        # ====================================================
+       
         # VALIDATION
-        # ====================================================
-
         processed = (
             messages
             | "ParseValidateEnrich"
@@ -1065,10 +1008,8 @@ def run():
 
         quarantine = processed.quarantine
 
-        # ====================================================
-        # QUARANTINE
-        # ====================================================
-
+    
+        # QUARANTINE  
         (
             quarantine
             | "WriteQuarantine"
@@ -1084,10 +1025,8 @@ def run():
             )
         )
 
-        # ====================================================
+   
         # EVENT TIME
-        # ====================================================
-
         windowed = (
             valid
 
@@ -1115,10 +1054,8 @@ def run():
             )
         )
 
-        # ====================================================
+       
         # STATEFUL SEMANTIC DEDUPLICATION
-        # ====================================================
-
         deduplicated = (
             windowed
 
@@ -1136,10 +1073,8 @@ def run():
             )
         )
 
-        # ====================================================
+       
         # CURATED / SILVER
-        # ====================================================
-
         (
             deduplicated
 

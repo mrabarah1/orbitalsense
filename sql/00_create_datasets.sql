@@ -1,12 +1,12 @@
 
 
-CREATE SCHEMA IF NOT EXISTS `YOUR_PROJECT.orbitalsense_raw`
+CREATE SCHEMA IF NOT EXISTS `orbitalsense-platform.orbitalsense_raw`
 OPTIONS (location = "us-central1");
 
-CREATE SCHEMA IF NOT EXISTS `YOUR_PROJECT.orbitalsense_silver`
+CREATE SCHEMA IF NOT EXISTS `orbitalsense-platform.orbitalsense_silver`
 OPTIONS (location = "us-central1");
 
-CREATE SCHEMA IF NOT EXISTS `YOUR_PROJECT.orbitalsense_gold`
+CREATE SCHEMA IF NOT EXISTS `orbitalsense-platform.orbitalsense_gold`
 OPTIONS (location = "us-central1");
 
 

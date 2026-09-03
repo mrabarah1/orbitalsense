@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `YOUR_PROJECT.orbitalsense_gold.gold_pipeline_quality`
+  `orbitalsense-platform.orbitalsense_gold.gold_pipeline_quality`
 AS
 
 WITH curated AS (
@@ -17,7 +17,7 @@ WITH curated AS (
             AS max_latency_ms
 
     FROM
-        `YOUR_PROJECT.orbitalsense_silver.silver_telemetry`
+        `orbitalsense-platform.orbitalsense_silver.silver_telemetry`
 ),
 
 quarantine AS (
@@ -26,7 +26,7 @@ quarantine AS (
         COUNT(*) AS quarantined_records
 
     FROM
-        `YOUR_PROJECT.orbitalsense_raw.quarantine`
+        `orbitalsense-platform.orbitalsense_raw.quarantine`
 ),
 
 raw AS (
@@ -35,7 +35,7 @@ raw AS (
         COUNT(*) AS raw_records
 
     FROM
-        `YOUR_PROJECT.orbitalsense_raw.raw_telemetry`
+        `orbitalsense-platform.orbitalsense_raw.raw_telemetry`
 )
 
 SELECT

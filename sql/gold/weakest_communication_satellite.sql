@@ -24,7 +24,7 @@ SELECT
     ) AS degraded_or_lost_rate
 
 FROM
-    `YOUR_PROJECT.orbitalsense_gold.gold_communication_health`
+    `orbitalsense-platform.orbitalsense_gold.gold_communication_health`
 
 GROUP BY
     satellite_id

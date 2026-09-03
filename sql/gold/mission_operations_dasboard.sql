@@ -51,7 +51,7 @@ SELECT
     ) AS max_latency_ms
 
 FROM
-    `YOUR_PROJECT.orbitalsense_gold.gold_satellite_health` h
+    `orbitalsense-platform.orbitalsense_gold.gold_satellite_health` h
 
 ORDER BY
     h.metric_date,

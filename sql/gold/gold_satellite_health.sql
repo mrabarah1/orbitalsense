@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `YOUR_PROJECT.orbitalsense_gold.gold_satellite_health`
+  `orbitalsense-platform.orbitalsense_gold.gold_satellite_health`
 PARTITION BY DATE(metric_date)
 CLUSTER BY satellite_id
 AS
@@ -67,7 +67,7 @@ WITH daily AS (
         MAX(latency_ms) AS max_latency_ms
 
     FROM
-        `YOUR_PROJECT.orbitalsense_silver.silver_telemetry`
+        `orbitalsense-platform.orbitalsense_silver.silver_telemetry`
 
     GROUP BY
         metric_date,

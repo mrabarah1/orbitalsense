@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `YOUR_PROJECT.orbitalsense_gold.gold_contact_gaps`
+  `orbitalsense-platform.orbitalsense_gold.gold_contact_gaps`
 AS
 
 WITH ordered AS (
@@ -16,7 +16,7 @@ WITH ordered AS (
         ) AS previous_event_timestamp
 
     FROM
-        `YOUR_PROJECT.orbitalsense_silver.silver_telemetry`
+        `orbitalsense-platform.orbitalsense_silver.silver_telemetry`
 ),
 
 gaps AS (

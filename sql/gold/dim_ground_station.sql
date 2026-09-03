@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `YOUR_PROJECT.orbitalsense_gold.dim_ground_station`
+  `orbitalsense-platform.orbitalsense_gold.dim_ground_station`
 AS
 
 SELECT

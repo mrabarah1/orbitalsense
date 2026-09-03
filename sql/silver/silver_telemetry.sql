@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `YOUR_PROJECT.orbitalsense_silver.silver_telemetry`
+  `orbitalsense-platform.orbitalsense_silver.silver_telemetry`
 PARTITION BY DATE(event_timestamp)
 CLUSTER BY satellite_id, subsystem, ground_station_id
 AS
@@ -43,7 +43,7 @@ SELECT
     ) AS latency_ms
 
 FROM
-  `YOUR_PROJECT.orbitalsense_raw.curated_telemetry`
+  `orbitalsense-platform.orbitalsense_raw.curated_telemetry`
 
 WHERE
     satellite_id IS NOT NULL

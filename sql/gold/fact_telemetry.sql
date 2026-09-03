@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `YOUR_PROJECT.orbitalsense_gold.fact_telemetry`
+  `orbitalsense-platform.orbitalsense_gold.fact_telemetry`
 PARTITION BY DATE(event_timestamp)
 CLUSTER BY satellite_id, subsystem, ground_station_id
 AS
@@ -42,4 +42,4 @@ SELECT
     pipeline_version
 
 FROM
-  `YOUR_PROJECT.orbitalsense_silver.silver_telemetry`;
+  `orbitalsense-platform.orbitalsense_silver.silver_telemetry`;

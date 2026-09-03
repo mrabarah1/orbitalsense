@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `YOUR_PROJECT.orbitalsense_gold.gold_data_completeness`
+  `orbitalsense-platform.orbitalsense_gold.gold_data_completeness`
 AS
 
 WITH expected AS (
@@ -59,7 +59,7 @@ actual AS (
         COUNT(*) AS actual_readings
 
     FROM
-        `YOUR_PROJECT.orbitalsense_silver.silver_telemetry`
+        `orbitalsense-platform.orbitalsense_silver.silver_telemetry`
 
     GROUP BY
         satellite_id,

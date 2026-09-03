@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `YOUR_PROJECT.orbitalsense_gold.gold_data_quality`
+  `orbitalsense-platform.orbitalsense_gold.gold_data_quality`
 AS
 
 SELECT
@@ -11,7 +11,7 @@ SELECT
     COUNT(*) AS rejected_records
 
 FROM
-    `YOUR_PROJECT.orbitalsense_raw.quarantine`
+    `orbitalsense-platform.orbitalsense_raw.quarantine`
 
 GROUP BY
     quarantine_date,

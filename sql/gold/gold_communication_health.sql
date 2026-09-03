@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `YOUR_PROJECT.orbitalsense_gold.gold_communication_health`
+  `orbitalsense-platform.orbitalsense_gold.gold_communication_health`
 PARTITION BY DATE(metric_date)
 CLUSTER BY satellite_id
 AS
@@ -31,7 +31,7 @@ SELECT
     ) AS degraded_or_lost_rate
 
 FROM
-    `YOUR_PROJECT.orbitalsense_silver.silver_comms`
+    `orbitalsense-platform.orbitalsense_silver.silver_comms`
 
 GROUP BY
     metric_date,
